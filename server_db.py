@@ -50,6 +50,13 @@ def find_keys(key):
         return False
 
 
+def all_keys():
+    with sqlt.connect(db_name) as conn:
+        cur = conn.cursor()
+        all_data = cur.execute('SELECT * FROM Key').fetchall()
+        return all_data
+
+
 def find_users(system_id):
     with sqlt.connect(db_name) as conn:
         cur = conn.cursor()

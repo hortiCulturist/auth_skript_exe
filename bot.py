@@ -13,7 +13,7 @@ import server_db
 import key_generator
 
 storage = MemoryStorage()
-bot = Bot(token=bot_config.TOKEN)
+bot = Bot(bot_config.TOKEN)
 dp = Dispatcher(bot, storage=storage)
 
 
@@ -50,7 +50,7 @@ async def set_license_time(message: types.Message, state: FSMContext):
 #  конец "Время лицензии"
 
 
-@dp.message_handler(text='Сгенерировать ключи 🔑')
+@dp.message_handler(text='Сгенерировать ключи 🔑', user_id=bot_config.ADMIN_ID)
 async def generate_keys_handler(message: types.Message):
     await bot.send_message(message.from_user.id, 'Введите количество ключей: ')
     await LicenseKeysState.waiting_for_key_count.set()
@@ -67,6 +67,13 @@ async def generate_keys(message: types.Message, state: FSMContext):
     await bot.send_message(message.from_user.id, f'Вот ваши {key_count} ключей:\n\n' + '\n'.join(keys),
                            reply_markup=bot_button.start_button())
     await state.finish()
+
+
+@dp.message_handler(text='Показать все ключи 📋', user_id=bot_config.ADMIN_ID)
+async def generate_keys_handler(message: types.Message):
+    key_strings = [str(key[1]) for key in server_db.all_keys()]
+    result = "\n".join(key_strings)
+    await bot.send_message(message.from_user.id, f'{result}')
 
 
 if __name__ == '__main__':
