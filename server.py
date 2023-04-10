@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import FastAPI
 from datetime import datetime, timedelta
 
@@ -67,3 +68,7 @@ def license_time(sys_id):
     time_now = datetime.strptime(time_now, '%Y-%m-%d %H:%M:%S')
     left_days = license_end_time - time_now
     return left_days
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
